@@ -1,10 +1,10 @@
-import { GET_COUNTRIES, GET_COUNTRY, SEARCH_COUNTRIES, DELETE_COUNTRY } from "../actions/actions-countries";
+import { GET_COUNTRIES, GET_COUNTRY, SEARCH_COUNTRIES, DELETE_COUNTRY, SET_CONTINENT } from "../actions/actions-countries";
 import countriesData from '../data/countries';
 
 const initialState = {
     countries: countriesData,
     selectedCountry: {},
-    visibleCountries: {}
+    visibleCountries: []
 };
 
 const countriesReducer = function (state = initialState, action) {
@@ -15,12 +15,15 @@ const countriesReducer = function (state = initialState, action) {
             const selectedCountry = state.countries.find(country => country.id === parseInt(action.id));
             return Object.assign({}, state, {selectedCountry});
         case SEARCH_COUNTRIES:
-            const foundCountries = state.countries.find(country => country.name.toLowerCase().includes(action.searchText.toLowerCase()));
+            const foundCountries = state.countries.filter(country => country.name.toLowerCase().includes(action.searchText.toLowerCase()));
             return Object.assign({}, state, {visibleCountries: foundCountries});
         case DELETE_COUNTRY:
             const notDeletedCountries = state.countries.filter(country => country.id !== action.id);
             const notDeletedVisibleCountries = state.countries.filter(country => country.id !== action.id);
             return Object.assign({}, state, {countries: notDeletedCountries, visibleCountries: notDeletedVisibleCountries});
+        case SET_CONTINENT:
+            const continents = state.countries.filter(country => country.continent === action.name);
+            return Object.assign({}, state, {visibleCountries: continents});
         default:
             return state;
     }
